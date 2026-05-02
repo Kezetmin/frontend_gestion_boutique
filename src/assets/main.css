@@ -1,0 +1,63 @@
+body {
+  background: #f8fafc;
+  font-family: Inter, Roboto, Arial, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  color: #0f172a;
+}
+
+.premium-card {
+  border: 1px solid #eef2f7;
+  transition: all 0.2s ease;
+}
+
+.premium-card:hover {
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
+}
+
+@media (max-width: 960px) {
+  .v-container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .v-table {
+    overflow-x: auto;
+  }
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-responsive table {
+  min-width: 760px;
+}
+
+.form-card {
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  border-radius: 20px;
+}
+
+.form-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.form-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.action-btn {
+  text-transform: none;
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+.dialog-card {
+  border-radius: 22px !important;
+}
