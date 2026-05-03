@@ -1,98 +1,123 @@
 <template>
-  <div>
-    <div class="d-flex justify-center">
-      <v-card class="renew-card pa-8 rounded-xl" elevation="0" max-width="800">
+  <div class="d-flex justify-center">
+    <v-card
+      class="pa-8 rounded-xl renew-page"
+      elevation="0"
+      max-width="700"
+    >
+      <v-icon
+        class="mb-4"
+        color="warning"
+        icon="mdi-clock-alert-outline"
+        size="70"
+      />
 
-        <div class="text-center mb-6">
-          <v-avatar class="mb-4" color="error" size="72">
-            <v-icon icon="mdi-alert-circle-outline" size="40" />
-          </v-avatar>
+      <h1 class="text-h4 font-weight-bold mb-3">
+        {{
+          isTrialExpired
+            ? 'Votre essai est terminé'
+            : 'Votre abonnement a expiré'
+        }}
+      </h1>
 
-          <v-alert class="mb-6" type="warning" variant="tonal">
-            Votre abonnement est expiré, mais vos données sont conservées.
-            Renouvelez simplement pour reprendre l’utilisation normale.
-          </v-alert>
+      <p class="text-body-1 text-medium-emphasis mb-6">
+        {{
+          isTrialExpired
+            ? 'Votre période d’essai gratuite de 7 jours est terminée. Pour continuer à utiliser Ketz POS, veuillez renouveler votre abonnement.'
+            : 'Votre abonnement est arrivé à expiration. Veuillez renouveler pour continuer à utiliser Ketz POS.'
+        }}
+      </p>
 
-          <p class="text-body-1 text-medium-emphasis">
-            Votre accès est limité. Renouvelez votre abonnement pour continuer
-            à utiliser toutes les fonctionnalités de la boutique.
-          </p>
-        </div>
+      <v-row class="mb-6">
+        <v-col cols="12" md="6">
+          <v-card class="pa-4 rounded-xl" variant="tonal">
+            <div class="text-h6 font-weight-bold mb-2">
+              Pack Basic
+            </div>
 
-        <v-alert class="mb-6" type="warning" variant="tonal">
-          Les données de votre boutique sont conservées. Il suffit de renouveler
-          l’abonnement pour reprendre l’utilisation normale.
-        </v-alert>
+            <div class="mb-2">
+              Idéal pour petites boutiques
+            </div>
 
-        <v-row class="mb-6">
-          <v-col cols="12" md="6">
-            <v-card class="pa-5 rounded-xl plan-card" elevation="0">
-              <h2 class="text-h6 font-weight-bold mb-2">Renouveler Basic</h2>
+            <div class="text-body-2">
+              Produits, ventes, historique simple
+            </div>
+          </v-card>
+        </v-col>
 
-              <p class="text-body-2 text-medium-emphasis mb-4">
-                Continuer avec les fonctionnalités essentielles.
-              </p>
-
-              <div class="text-h5 font-weight-bold mb-4">
-                5 000 FCFA / mois
-              </div>
-
-              <v-btn block class="action-btn" color="primary" variant="tonal">
-                Renouveler Basic
-              </v-btn>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card class="pa-5 rounded-xl plan-card pro-card" elevation="0">
-              <h2 class="text-h6 font-weight-bold mb-2">Passer au Pro</h2>
-
-              <p class="text-body-2 text-medium-emphasis mb-4">
-                Débloquer les fonctions avancées et limites supérieures.
-              </p>
-
-              <div class="text-h5 font-weight-bold mb-4">
-                10 000 FCFA / mois
-              </div>
-
-              <v-btn block class="action-btn" color="success" variant="flat">
-                Activer Pro
-              </v-btn>
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <v-divider class="mb-6" />
-
-        <div class="text-center">
-          <p class="text-body-2 text-medium-emphasis mb-4">
-            Pour le paiement au Cameroun, vous pouvez prévoir Mobile Money,
-            Orange Money ou activation manuelle par l’administrateur.
-          </p>
-
-          <v-btn
-            color="success"
-            href="https://wa.me/237690322927"
-            prepend-icon="mdi-whatsapp"
-            size="large"
-            target="_blank"
+        <v-col cols="12" md="6">
+          <v-card
+            class="pa-4 rounded-xl"
+            color="primary"
+            variant="tonal"
           >
-            Renouveler via WhatsApp
-          </v-btn>
-        </div>
-      </v-card>
-    </div>
+            <div class="text-h6 font-weight-bold mb-2">
+              Pack Pro
+            </div>
+
+            <div class="mb-2">
+              Pour boutiques sérieuses
+            </div>
+
+            <div class="text-body-2">
+              Inventaire, caisse avancée, multi-utilisateurs,
+              crédits clients, rapports avancés
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <v-btn
+        block
+        class="mb-3"
+        color="success"
+        prepend-icon="mdi-whatsapp"
+        size="large"
+        @click="contactWhatsApp"
+      >
+        Renouveler sur WhatsApp
+      </v-btn>
+
+      <v-btn
+        block
+        variant="text"
+        @click="logoutUser"
+      >
+        Se déconnecter
+      </v-btn>
+    </v-card>
   </div>
 </template>
 
+<script setup>
+  import { computed } from 'vue'
+  import { subscription } from '@/services/subscriptionState'
+  function contactWhatsApp () {
+    const phone = '237XXXXXXXXX'
+
+    const message = encodeURIComponent(
+      'Bonjour Ketz POS, mon essai gratuit est terminé et je souhaite renouveler mon abonnement.',
+    )
+
+    window.open(
+      `https://wa.me/${phone}?text=${message}`,
+      '_blank',
+    )
+  }
+
+  const isTrialExpired = computed(() => {
+    return subscription.value?.is_trial === true
+  })
+
+  function logoutUser () {
+    localStorage.removeItem('token')
+    window.location.href = '/login'
+  }
+</script>
+
 <style scoped>
-.renew-card,
-.plan-card {
+.renew-page {
   background: white;
   border: 1px solid #eef0f4;
-}
-
-.pro-card {
-  background: linear-gradient(135deg, #ecfdf5, #ffffff);
 }
 </style>

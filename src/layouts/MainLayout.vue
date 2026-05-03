@@ -220,11 +220,11 @@
 
       <div class="topbar-title">
         <div class="text-subtitle-1 font-weight-bold">
-          KetzStock
+          KetzPos
         </div>
 
         <div class="text-caption text-medium-emphasis d-none d-sm-block">
-          Stock · Ventes · Bénéfices
+          Gestion Boutique
         </div>
       </div>
 
