@@ -45,6 +45,7 @@
       </p>
 
       <v-btn
+        v-if="shop?.is_demo"
         color="error"
         prepend-icon="mdi-delete-alert-outline"
         @click="dialog = true"
@@ -123,6 +124,7 @@
     try {
       const response = await api.get('shops/my-shop/')
       shop.value = response.data
+      console.log(shop.value)
     } catch (error) {
       console.error(error)
     }

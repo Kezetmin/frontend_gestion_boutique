@@ -55,7 +55,28 @@
     <!-- Content -->
     <template v-else>
       <!-- Stats -->
+      <v-alert
+        v-if="subscription"
+        class="mb-4"
+        :color="subscription.days_remaining <= 3 ? 'warning' : 'info'"
+        variant="tonal"
+      >
+        <div class="font-weight-bold">
+          Pack {{ subscription.plan_name }}
+        </div>
+
+        <div v-if="subscription.is_trial">
+          Essai gratuit :
+          {{ subscription.days_remaining }} jour(s) restant(s)
+        </div>
+
+        <div v-else>
+          Abonnement expire dans
+          {{ subscription.days_remaining }} jour(s)
+        </div>
+      </v-alert>
       <v-row class="mb-2">
+
         <v-col cols="12" lg="3" sm="6">
           <v-card
             class="stat-card clickable-card pa-5 rounded-xl"
@@ -342,6 +363,7 @@
       </v-row>
     </template>
   </div>
+
 </template>
 
 <script setup>
@@ -349,6 +371,10 @@
   import { useRouter } from 'vue-router'
   import PageLoader from '@/components/PageLoader.vue'
   import api from '@/services/api'
+  import {
+    loadSubscription,
+    subscription,
+  } from '@/services/subscriptionState'
 
   const loading = ref(true)
   const errorMessage = ref('')
@@ -399,6 +425,7 @@
 
   onMounted(() => {
     fetchDashboard()
+    loadSubscription()
   })
 
   function goToHistory () {

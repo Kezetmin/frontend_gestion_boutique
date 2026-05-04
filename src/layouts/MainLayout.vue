@@ -220,7 +220,7 @@
 
       <div class="topbar-title">
         <div class="text-subtitle-1 font-weight-bold">
-          KetzPos
+          KetzPOS
         </div>
 
         <div class="text-caption text-medium-emphasis d-none d-sm-block">
