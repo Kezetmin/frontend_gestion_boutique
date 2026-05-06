@@ -240,21 +240,10 @@
 
             <td>
               <v-chip
-                v-if="sale.status === 'cancelled'"
-                color="error"
+                :color="getSaleStatusColor(sale)"
                 size="small"
-                variant="tonal"
               >
-                Annulée
-              </v-chip>
-
-              <v-chip
-                v-else
-                color="success"
-                size="small"
-                variant="tonal"
-              >
-                Valide
+                {{ getSaleStatusLabel(sale) }}
               </v-chip>
             </td>
 
@@ -519,6 +508,37 @@
       timeStyle: 'short',
     })
   }
+  function getSaleStatusLabel (sale) {
+    if (sale.status === 'cancelled') {
+      return 'Annulée'
+    }
+
+    if (sale.payment_status === 'partial') {
+      return 'Partielle'
+    }
+
+    if (sale.payment_status === 'paid') {
+      return 'Payée'
+    }
+
+    return 'Validée'
+  }
+
+  function getSaleStatusColor (sale) {
+    if (sale.status === 'cancelled') {
+      return 'error'
+    }
+
+    if (sale.payment_status === 'partial') {
+      return 'warning'
+    }
+
+    if (sale.payment_status === 'paid') {
+      return 'success'
+    }
+
+    return 'info'
+  }
   const visibleSales = computed(() => {
     if (!isSeller.value) {
       return sales.value
@@ -633,7 +653,7 @@
     } catch (error) {
       errorMessage.value = error.response?.status === 403
         ? error.response?.data?.error
-        || 'Fonction réservée au pack Pro.'
+          || 'Fonction réservée au pack Pro.'
         : 'Impossible de charger l’historique.'
     } finally {
       loading.value = false

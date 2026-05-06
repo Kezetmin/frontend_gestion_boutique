@@ -10,7 +10,7 @@
         />
 
         <h1 class="text-h4 font-weight-bold mb-3">
-          Passez au pack Pro
+          Packs
         </h1>
 
         <p class="text-body-1 text-medium-emphasis">
@@ -20,11 +20,23 @@
       </div>
 
       <v-alert
+        v-if="isBasic"
+        class="mb-6"
+        type="info"
+        variant="tonal"
+      >
+        Vous êtes actuellement sur le pack Basic.
+        Passez au pack Pro pour débloquer la caisse avancée, l’inventaire,
+        les employés, les crédits clients et les rapports détaillés.
+      </v-alert>
+
+      <v-alert
+        v-else-if="!isPro"
         class="mb-6"
         type="warning"
         variant="tonal"
       >
-        Vous utilisez actuellement une fonctionnalité réservée au pack Pro.
+        Votre abonnement n’est pas actif. Contactez-nous pour activer votre pack.
       </v-alert>
 
       <v-row class="mb-6">
@@ -159,6 +171,7 @@
 </template>
 
 <script setup>
+  import { isBasic, isPro } from '@/services/subscriptionState'
   function contactWhatsApp () {
     const phone = '237683182341'
     const message = encodeURIComponent(

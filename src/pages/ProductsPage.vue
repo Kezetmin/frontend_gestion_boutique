@@ -488,10 +488,13 @@
 
   async function fetchCategories () {
     try {
-      const response = await api.get('categories/')
-      categories.value = response.data
+      const response = await api.get('products/categories/')
+
+      categories.value = Array.isArray(response.data)
+        ? response.data
+        : response.data.results || []
     } catch (error) {
-      console.error(error)
+      console.error('Erreur chargement catégories:', error)
     }
   }
 
