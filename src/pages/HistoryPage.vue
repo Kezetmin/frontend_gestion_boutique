@@ -653,7 +653,7 @@
     } catch (error) {
       errorMessage.value = error.response?.status === 403
         ? error.response?.data?.error
-          || 'Fonction réservée au pack Pro.'
+        || 'Fonction réservée au pack Pro.'
         : 'Impossible de charger l’historique.'
     } finally {
       loading.value = false
@@ -791,40 +791,198 @@
     return validFilteredSales.value.length
   })
   function printReceipt () {
-    const content = document.querySelector('#receipt-print-area')
+    if (!selectedReceipt.value) return
 
-    if (!content) return
+    const receipt = selectedReceipt.value
 
-    const printWindow = window.open('', '', 'width=400,height=600')
+    const itemsRows = receipt.items.map(item => `
+    <tr>
+      <td>${item.product_name}</td>
+      <td class="center">${item.quantity}</td>
+      <td class="right">${formatFCFA(item.unit_price)}</td>
+      <td class="right">${formatFCFA(item.subtotal)}</td>
+    </tr>
+  `).join('')
+
+    const printWindow = window.open('', '', 'width=420,height=700')
 
     printWindow.document.write(`
     <html>
       <head>
-        <title>Reçu</title>
+        <title>Reçu ${receipt.receipt_number}</title>
         <style>
-  body {
-    font-family: monospace;
-    padding: 10px;
-    font-size: 12px;
-  }
+          * {
+            box-sizing: border-box;
+          }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            padding: 10px;
+            color: #111;
+          }
 
-  th, td {
-    padding: 4px;
-    font-size: 11px;
-  }
+          .receipt {
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+          }
 
-  .text-center {
-    text-align: center;
-  }
-</style>
+          .center {
+            text-align: center;
+          }
+
+          .right {
+            text-align: right;
+          }
+
+          .title {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 4px;
+          }
+
+          .sub {
+            text-align: center;
+            font-size: 11px;
+            margin-bottom: 3px;
+          }
+
+          .line {
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+          }
+
+          .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 4px;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+          }
+
+          th, td {
+            padding: 4px 2px;
+            font-size: 11px;
+            vertical-align: top;
+          }
+
+          th {
+            border-bottom: 1px solid #000;
+          }
+
+          th:nth-child(1),
+          td:nth-child(1) {
+            width: 40%;
+            text-align: left;
+            word-wrap: break-word;
+          }
+
+          th:nth-child(2),
+          td:nth-child(2) {
+            width: 15%;
+            text-align: center;
+          }
+
+          th:nth-child(3),
+          td:nth-child(3) {
+            width: 22%;
+            text-align: right;
+          }
+
+          th:nth-child(4),
+          td:nth-child(4) {
+            width: 23%;
+            text-align: right;
+          }
+
+          .total-row {
+            font-weight: bold;
+            font-size: 13px;
+          }
+
+          .footer {
+            text-align: center;
+            font-size: 11px;
+            margin-top: 12px;
+          }
+
+          @media print {
+            body {
+              margin: 0;
+              padding: 8px;
+            }
+
+            .receipt {
+              max-width: 320px;
+            }
+          }
+        </style>
       </head>
+
       <body>
-        ${content.innerHTML}
+        <div class="receipt">
+          <div class="title">${receipt.shop_name}</div>
+          <div class="sub">Reçu N° ${receipt.receipt_number}</div>
+          <div class="sub">${formatDate(receipt.date)}</div>
+
+          <div class="line"></div>
+
+          <div class="row">
+            <span>Vendeur</span>
+            <strong>${receipt.seller}</strong>
+          </div>
+
+          <div class="row">
+            <span>Client</span>
+            <strong>${receipt.customer || 'Comptoir'}</strong>
+          </div>
+
+          <div class="line"></div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Article</th>
+                <th>Qté</th>
+                <th>P.U</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsRows}
+            </tbody>
+          </table>
+
+          <div class="line"></div>
+
+          <div class="row total-row">
+            <span>Total</span>
+            <span>${formatFCFA(receipt.total_amount)}</span>
+          </div>
+
+          <div class="row">
+            <span>Payé</span>
+            <span>${formatFCFA(receipt.amount_paid)}</span>
+          </div>
+
+          <div class="row">
+            <span>Reste</span>
+            <span>${formatFCFA(receipt.remaining_amount)}</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="footer">
+            Merci pour votre achat 🙏
+          </div>
+        </div>
       </body>
     </html>
   `)

@@ -12,7 +12,6 @@
       <div class="pa-5">
         <!-- Logo / marque -->
         <div class="d-flex align-center mb-6">
-
           <v-img
             class="mx-auto mb-4"
             max-width="160"
